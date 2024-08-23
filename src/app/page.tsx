@@ -42,7 +42,7 @@ export default function Home() {
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: [
-          { role: 'user', content: query }
+          { role: 'user', content: `I am an average person with basic boxing knowledge. What is the best way to handle this situation: ${query}?` }
         ]
       })
     });
@@ -59,13 +59,12 @@ export default function Home() {
     setChatResponse(null);
 
     try {
-      // Fetch videos from YouTube
-      const fetchedVideos = await fetchVideosFromYouTube(query);
-      setVideos(fetchedVideos);
+      const chatResponse = await fetchChatGPTResponse(query);
+      setChatResponse(chatResponse);
 
-      // Fetch response from ChatGPT
-      const response = await fetchChatGPTResponse(query);
-      setChatResponse(response);
+      // Based on the boxing suggestion from ChatGPT, we can search for relevant videos
+      const fetchedVideos = await fetchVideosFromYouTube(chatResponse);
+      setVideos(fetchedVideos);
     } catch (error) {
       console.error('Error fetching data:', error);
       setError('Error fetching data. Please try again.');
@@ -86,7 +85,6 @@ export default function Home() {
               <div className='video-placeholder'>
                 <div className='placeholder-content hvh'>
                   {/* Placeholder content */}
-
                 </div>
               </div>
             ) : (
