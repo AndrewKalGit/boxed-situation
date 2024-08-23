@@ -9,7 +9,7 @@ export default function Home() {
   const [videos, setVideos] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [chatResponse, setChatResponse] = useState<string | null>(null);
+  const [responseSummary, setResponseSummary] = useState<string | null>(null);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
@@ -31,8 +31,9 @@ export default function Home() {
     return [];
   };
 
-  const fetchChatGPTResponse = async (query: string): Promise<string> => {
+  const fetchChatGPTResponse = async (query: string): Promise<{ response: string, explanation: string }> => {
     const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -47,8 +48,25 @@ export default function Home() {
       })
     });
     const data = await response.json();
+    const responseText = data.choices[0]?.message?.content || 'No response';
 
-    return data.choices[0]?.message?.content || 'No response';
+    const explanationResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'user', content: `Given this boxing situation: ${query}, why is the following technique the best option: ${responseText}?` }
+        ]
+      })
+    });
+    const explanationData = await explanationResponse.json();
+    const explanationText = explanationData.choices[0]?.message?.content || 'No explanation';
+
+    return { response: responseText, explanation: explanationText };
   };
 
   const handleSearch = async () => {
@@ -56,14 +74,17 @@ export default function Home() {
 
     setLoading(true);
     setError(null);
-    setChatResponse(null);
+    setResponseSummary(null);
 
     try {
-      const chatResponse = await fetchChatGPTResponse(query);
-      setChatResponse(chatResponse);
+      const { response, explanation } = await fetchChatGPTResponse(query);
+      setResponseSummary(`
+        **Boxing Situation:** ${query}
+        **Recommended Technique:** ${response}
+        **Why This Technique:** ${explanation}
+      `);
 
-      // Based on the boxing suggestion from ChatGPT, we can search for relevant videos
-      const fetchedVideos = await fetchVideosFromYouTube(chatResponse);
+      const fetchedVideos = await fetchVideosFromYouTube(response);
       setVideos(fetchedVideos);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -138,11 +159,11 @@ export default function Home() {
               Simple as: someone is throwing a bottle at you, Complex as: it is a Saturday night out with the boys and 3 attackers appear.
             </p>
           </div>
-          <div className='h-28'>
-            {chatResponse && (
+          <div>
+            {responseSummary && (
               <div className="m-10 p-4 border rounded-md shadow-md">
-                <h2 className="text-xl font-semibold">ChatGPT Response:</h2>
-                <p>{chatResponse}</p>
+                <h2 className="text-xl font-semibold">Summary:</h2>
+                <p>{responseSummary}</p>
               </div>
             )}
             {error && (
