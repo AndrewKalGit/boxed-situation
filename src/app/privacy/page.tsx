@@ -3,7 +3,6 @@ const page = () => {
         <div>
             <h1 className="bold text-xl">Privacy Policy</h1>
             <p>
-                Privacy Policy for Boxed Situation
 
                 Effective Date: 08/23/2024
 
