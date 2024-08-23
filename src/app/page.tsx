@@ -75,87 +75,91 @@ export default function Home() {
   };
 
   return (
-    <main>
-      <div className='text-center'>
-        <h1 className='my-4 text-4xl font-bold'>
-          Boxed Situation
-        </h1>
-        <div className='flex justify-center items-center'>
-          {videos.length === 0 ? (
-            <div className='video-placeholder'>
-              <div className='placeholder-content'>
-                {/* Placeholder content */}
-                <span>Video Placeholder</span>
+    <>
+      <main>
+        <div className='text-center'>
+          <h1 className='my-4 text-4xl font-bold'>
+            Boxed Situation
+          </h1>
+          <div className='flex justify-center items-center'>
+            {videos.length === 0 ? (
+              <div className='video-placeholder'>
+                <div className='placeholder-content hvh'>
+                  {/* Placeholder content */}
+
+                </div>
               </div>
-            </div>
-          ) : (
-            videos.map((url, index) => (
-              <VideoPlayer key={index} url={url} />
-            ))
-          )}
-        </div>
-        <div className="relative m-10">
-          <label htmlFor="Search" className="sr-only">Search</label>
-          <input
-            type="text"
-            id="Search"
-            placeholder="Enter a situation and get a boxing solution"
-            className="w-full rounded-md border-gray-700 py-2.5 px-4 pe-10 shadow-xl sm:text-sm"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onKeyDown={handleKeyDown}
-          />
-          <span className="absolute inset-y-0 right-0 flex items-center pr-3">
-            <button
-              type="button"
-              className="text-gray-600 hover:text-gray-700"
-              onClick={handleSearch}
-              disabled={loading}
-            >
-              <span className="sr-only">Search</span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="1.5"
-                stroke="currentColor"
-                className="w-5 h-5"
+            ) : (
+              videos.map((url, index) => (
+                <VideoPlayer key={index} url={url} />
+              ))
+            )}
+          </div>
+          <div className="relative m-10">
+            <label htmlFor="Search" className="sr-only">Search</label>
+            <input
+              type="text"
+              id="Search"
+              placeholder="Enter a situation and get a boxing solution"
+              className="w-full rounded-md border-gray-700 py-2.5 px-4 pe-10 shadow-xl sm:text-sm"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+            />
+            <span className="absolute inset-y-0 right-0 flex items-center pr-3">
+              <button
+                type="button"
+                className="text-gray-600 hover:text-gray-700"
+                onClick={handleSearch}
+                disabled={loading}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                />
-              </svg>
-            </button>
-          </span>
-        </div>
-        {chatResponse && (
-          <div className="m-10 p-4 border rounded-md shadow-md">
-            <h2 className="text-xl font-semibold">ChatGPT Response:</h2>
-            <p>{chatResponse}</p>
+                <span className="sr-only">Search</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-5 h-5"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
+                  />
+                </svg>
+              </button>
+            </span>
           </div>
-        )}
-        {error && (
-          <div className="m-10 p-4 border rounded-md shadow-md bg-red-100 text-red-700">
-            <h2 className="text-xl font-semibold">Error:</h2>
-            <p>{error}</p>
+          <div className="m-10">
+            <h1 className="text-xl font-semibold">Examples:</h1>
+            <p className="text-gray-900">
+              Type a specific scenario and see which boxing technique best matches it!
+            </p>
+            <p className="text-gray-700">
+              Simple as: someone is throwing a bottle at you, Complex as: it is a Saturday night out with the boys and 3 attackers appear.
+            </p>
           </div>
-        )}
-        <div className="m-10">
-          <h1 className="text-xl font-semibold">Examples:</h1>
-          <p className="text-gray-900">
-            Type a specific scenario and see which boxing technique best matches it!
-          </p>
-          <p className="text-gray-700">
-            Simple as: someone is throwing a bottle at you, Complex as: it is a Saturday night out with the boys and 3 attackers appear.
-          </p>
+          <div className='h-28'>
+            {chatResponse && (
+              <div className="m-10 p-4 border rounded-md shadow-md">
+                <h2 className="text-xl font-semibold">ChatGPT Response:</h2>
+                <p>{chatResponse}</p>
+              </div>
+            )}
+            {error && (
+              <div className="m-10 p-4 border rounded-md shadow-md bg-red-100 text-red-700">
+                <h2 className="text-xl font-semibold">Error:</h2>
+                <p>{error}</p>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-      <footer className="flex justify-center mx-10">
-        <Link href="./privacy/privacy"></Link>
-        <Link href="./terms/page.tsx"></Link>
+      </main >
+      <footer className='pb-4 flex justify-center gap-10'>
+        <Link href="terms">terms</Link>
+        <Link href="privacy">privacy</Link>
       </footer>
-    </main>
+    </>
   );
 }
